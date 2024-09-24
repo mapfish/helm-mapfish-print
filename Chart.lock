@@ -1,0 +1,6 @@
+dependencies:
+- name: application
+  repository: https://camptocamp.github.io/helm-application/
+  version: 2.8.0
+digest: sha256:dff8b247e4291ae1c7ce50d4b375b9cbc87d3138a4592f566eade3c216906c4b
+generated: "2024-09-24T11:17:37.901999247+02:00"
