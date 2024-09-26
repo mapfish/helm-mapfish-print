@@ -62,7 +62,7 @@ print:
         servicePort: 80
         ports:
           - name: http
-            port: 8080
+            port: 80
             protocol: TCP
             targetPort: http
 
@@ -272,3 +272,55 @@ print:
               memory: 2Gi
               cpu: '2'
               ephemeral-storage: 256Mi
+
+    not-allowed:
+      enabled: true
+
+      service:
+        type: ClusterIP
+        servicePort: 80
+        ports:
+          - name: http
+            port: 80
+            protocol: TCP
+            targetPort: http
+
+      ingress:
+        enabled: true
+        path: /metrics
+
+      containers:
+        not-allowed:
+          image:
+            repository: camptocamp/maintenance
+            tag: master
+            sha: 7cbddc1e17e422abc9d98781e9194a45f2c76f00dd8e4950c59bfc45f616f4a0 # Managed by update-image-hash script
+
+          env:
+            RESPONSE_CODE:
+              value: 403 Forbidden
+            TITLE:
+              value: Not allowed
+            HEADLINE:
+              value: Not allowed
+            MESSAGE:
+              value: You are not allowed to see the metrics
+          ports:
+            http:
+              containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            /data:
+              name: data
+          resources:
+            requests:
+              ephemeral-storage: 1Mi
+              memory: 500Ki
+              cpu: 0.1
+            limits:
+              ephemeral-storage: 2Mi
+              memory: 5Mi
+              cpu: 0.2
+      volumes:
+        data:
+          emptyDir: {}

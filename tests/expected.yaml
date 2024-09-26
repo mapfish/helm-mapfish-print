@@ -3,6 +3,26 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
+  name: example-print-not-allowed
+  labels:
+    helm.sh/chart: print
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: print
+    app.kubernetes.io/instance: example
+    app.kubernetes.io/component: not-allowed
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: print
+      app.kubernetes.io/instance: example
+      app.kubernetes.io/component: not-allowed
+---
+# Source: mapfish-print/charts/print/templates/pdb.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
   name: example-print-print
   labels:
     helm.sh/chart: print
@@ -51,6 +71,8 @@ data:
   CHART_NAME: print
   RELEASE_NAME: example
   RELEASE_NAMESPACE: default
+  SERVICE_NOT-ALLOWED_NAME: example-print-not-allowed
+  SERVICE_NOT-ALLOWED_CONTAINER_NOT-ALLOWED_IMAGE_TAG: "master"
   SERVICE_PRINT_NAME: example-print-print
   SERVICE_PRINT_CONTAINER_JMX-EXPORTER_IMAGE_TAG: "0.18.0"
   SERVICE_PRINT_CONTAINER_PRINT_IMAGE_TAG: "3.30"
@@ -93,6 +115,30 @@ data:
 apiVersion: v1
 kind: Service
 metadata:
+  name: example-print-not-allowed
+  labels:
+    helm.sh/chart: print
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: print
+    app.kubernetes.io/instance: example
+    app.kubernetes.io/component: not-allowed
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: print
+    app.kubernetes.io/instance: example
+    app.kubernetes.io/component: not-allowed
+---
+# Source: mapfish-print/charts/print/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
   name: example-print-print
   labels:
     helm.sh/chart: print
@@ -105,13 +151,86 @@ spec:
   type: ClusterIP
   ports:
     - name: http
-      port: 8080
+      port: 80
       protocol: TCP
       targetPort: http
   selector:
     app.kubernetes.io/name: print
     app.kubernetes.io/instance: example
     app.kubernetes.io/component: print
+---
+# Source: mapfish-print/charts/print/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-print-not-allowed
+  labels:
+    helm.sh/chart: print
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: print
+    app.kubernetes.io/instance: example
+    app.kubernetes.io/component: not-allowed
+spec:
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: print
+      app.kubernetes.io/instance: example
+      app.kubernetes.io/component: not-allowed
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: print
+        app.kubernetes.io/instance: example
+        app.kubernetes.io/component: not-allowed
+    spec:
+      imagePullSecrets:
+        - name: example-print-docker-registry
+      serviceAccountName: default
+      securityContext:
+        {}
+      containers:
+        - name: not-allowed
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/maintenance@sha256:7cbddc1e17e422abc9d98781e9194a45f2c76f00dd8e4950c59bfc45f616f4a0"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: "HEADLINE"
+              value: Not allowed
+            - name: "MESSAGE"
+              value: You are not allowed to see the metrics
+            - name: "RESPONSE_CODE"
+              value: 403 Forbidden
+            - name: "TITLE"
+              value: Not allowed
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            limits:
+              cpu: 0.2
+              ephemeral-storage: 2Mi
+              memory: 5Mi
+            requests:
+              cpu: 0.1
+              ephemeral-storage: 1Mi
+              memory: 500Ki
+          volumeMounts:
+            - mountPath: /data
+              name: data
+
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+
+      volumes:
+        - name: data
+          emptyDir: {}
 ---
 # Source: mapfish-print/charts/print/templates/deployment.yaml
 apiVersion: apps/v1
@@ -351,6 +470,13 @@ spec:
     - host: "print.example.com"
       http:
         paths:
+          - path: "/metrics"
+            pathType: Prefix
+            backend:
+              service:
+                name: example-print-not-allowed
+                port:
+                  number: 80
           - path: "/"
             pathType: Prefix
             backend:
@@ -381,6 +507,13 @@ spec:
     - host: "my-technical-url.example.com"
       http:
         paths:
+          - path: "/metrics"
+            pathType: Prefix
+            backend:
+              service:
+                name: example-print-not-allowed
+                port:
+                  number: 80
           - path: "/"
             pathType: Prefix
             backend:
