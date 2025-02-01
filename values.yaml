@@ -88,7 +88,7 @@ print:
         jmx-exporter:
           image:
             repository: bitnami/jmx-exporter
-            tag: 0.18.0
+            tag: 0.20.0
           command:
             - /bin/bash
             - -c
@@ -112,7 +112,7 @@ print:
         print:
           image:
             repository: camptocamp/mapfish_print
-            tag: '3.30'
+            tag: '3.31'
           env:
             LOG_LEVEL:
               value: INFO

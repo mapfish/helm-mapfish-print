@@ -22,11 +22,11 @@ repos:
       - id: trailing-whitespace
       - id: mixed-line-ending
   - repo: https://github.com/sbrunner/hooks
-    rev: 1.0.0
+    rev: 1.2.1
     hooks:
       - id: copyright
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.3.0
+    rev: v2.4.1
     hooks:
       - id: codespell
         exclude: |-
@@ -50,7 +50,7 @@ repos:
     hooks:
       - id: git-check
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.29.2
+    rev: 0.31.1
     hooks:
       - id: check-github-workflows
       - id: check-jsonschema
@@ -66,7 +66,7 @@ repos:
     hooks:
       - id: ripsecrets
   - repo: https://github.com/camptocamp/helm-common
-    rev: 2.0.1
+    rev: 2.1.1
     hooks:
       - id: helm-template-gen
         files: |-
@@ -79,7 +79,7 @@ repos:
           - .
           - tests/expected.yaml
   - repo: https://github.com/sbrunner/jsonschema-validator
-    rev: 0.1.0
+    rev: 0.3.2
     hooks:
       - id: jsonschema-validator
         files: ^ci/config\.yaml$
