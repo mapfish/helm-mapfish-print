@@ -74,8 +74,8 @@ data:
   SERVICE_NOT-ALLOWED_NAME: example-print-not-allowed
   SERVICE_NOT-ALLOWED_CONTAINER_NOT-ALLOWED_IMAGE_TAG: "master"
   SERVICE_PRINT_NAME: example-print-print
-  SERVICE_PRINT_CONTAINER_JMX-EXPORTER_IMAGE_TAG: "0.18.0"
-  SERVICE_PRINT_CONTAINER_PRINT_IMAGE_TAG: "3.30"
+  SERVICE_PRINT_CONTAINER_JMX-EXPORTER_IMAGE_TAG: "0.20.0"
+  SERVICE_PRINT_CONTAINER_PRINT_IMAGE_TAG: "3.31"
 ---
 # Source: mapfish-print/charts/print/templates/configmap.yaml
 apiVersion: v1
@@ -271,7 +271,7 @@ spec:
           securityContext:
             runAsNonRoot: true
             runAsUser: 33
-          image: "bitnami/jmx-exporter:0.18.0"
+          image: "bitnami/jmx-exporter:0.20.0"
           imagePullPolicy: IfNotPresent
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
@@ -297,7 +297,7 @@ spec:
           securityContext:
             runAsNonRoot: true
             runAsUser: 33
-          image: "camptocamp/mapfish_print:3.30"
+          image: "camptocamp/mapfish_print:3.31"
           imagePullPolicy: IfNotPresent
           env:
             - name: "CATALINA_CACHEDURATION"
