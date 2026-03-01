@@ -32,13 +32,13 @@ jobs:
       - run: pre-commit run --all-files
       - run: git diff --exit-code --patch > /tmp/pre-commit.patch || true
         if: failure()
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: Apply pre-commit fix.patch
           path: /tmp/pre-commit.patch
           retention-days: 1
         if: failure()
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: Expected
           path: tests/
