@@ -112,7 +112,7 @@ print:
         print:
           image:
             repository: camptocamp/mapfish_print
-            tag: '3.30'
+            tag: '4.0'
           env:
             LOG_LEVEL:
               value: INFO
