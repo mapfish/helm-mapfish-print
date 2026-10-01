@@ -18,6 +18,7 @@ spec:
       app.kubernetes.io/name: print
       app.kubernetes.io/instance: example
       app.kubernetes.io/component: not-allowed
+
 ---
 # Source: mapfish-print/charts/print/templates/pdb.yaml
 apiVersion: policy/v1
@@ -38,6 +39,7 @@ spec:
       app.kubernetes.io/name: print
       app.kubernetes.io/instance: example
       app.kubernetes.io/component: print
+
 ---
 # Source: mapfish-print/charts/print/templates/secret-docker-registry.yaml
 apiVersion: v1
@@ -54,6 +56,7 @@ metadata:
 type: kubernetes.io/dockerconfigjson
 data:
   .dockerconfigjson: ewogICJhdXRocyI6IHsKICAgICJmaXgtZW5kLWNvbW1hIjogeyJhdXRoIjogIiJ9CiAgfQp9
+
 ---
 # Source: mapfish-print/charts/print/templates/cm_metadata.yaml
 apiVersion: v1
@@ -76,6 +79,7 @@ data:
   SERVICE_PRINT_NAME: example-print-print
   SERVICE_PRINT_CONTAINER_JMX-EXPORTER_IMAGE_TAG: "0.18.0"
   SERVICE_PRINT_CONTAINER_PRINT_IMAGE_TAG: "3.30"
+
 ---
 # Source: mapfish-print/charts/print/templates/configmap.yaml
 apiVersion: v1
@@ -93,7 +97,6 @@ data:
   jmxExporterYaml: |-
     lowercaseOutputLabelNames: true
     lowercaseOutputName: true
-    password: null
     rules:
     - help: Read time or WMS requests
       labels:
@@ -109,7 +112,7 @@ data:
       type: GAUGE
     ssl: false
     startDelaySeconds: 30
-    username: null
+
 ---
 # Source: mapfish-print/charts/print/templates/service.yaml
 apiVersion: v1
@@ -134,6 +137,7 @@ spec:
     app.kubernetes.io/name: print
     app.kubernetes.io/instance: example
     app.kubernetes.io/component: not-allowed
+
 ---
 # Source: mapfish-print/charts/print/templates/service.yaml
 apiVersion: v1
@@ -158,6 +162,7 @@ spec:
     app.kubernetes.io/name: print
     app.kubernetes.io/instance: example
     app.kubernetes.io/component: print
+
 ---
 # Source: mapfish-print/charts/print/templates/deployment.yaml
 apiVersion: apps/v1
@@ -231,6 +236,7 @@ spec:
       volumes:
         - name: data
           emptyDir: {}
+
 ---
 # Source: mapfish-print/charts/print/templates/deployment.yaml
 apiVersion: apps/v1
@@ -447,6 +453,7 @@ spec:
               path: jmx-exporter.yaml
         - name: jmx-exporter-jar
           emptyDir: {}
+
 ---
 # Source: mapfish-print/charts/print/templates/ingress.yaml
 apiVersion: networking.k8s.io/v1
@@ -484,6 +491,7 @@ spec:
                 name: example-print-print
                 port:
                   number: 80
+
 ---
 # Source: mapfish-print/charts/print/templates/ingress.yaml
 apiVersion: networking.k8s.io/v1
@@ -521,6 +529,7 @@ spec:
                 name: example-print-print
                 port:
                   number: 80
+
 ---
 # Source: mapfish-print/charts/print/templates/podmonitor.yaml
 apiVersion: monitoring.coreos.com/v1
